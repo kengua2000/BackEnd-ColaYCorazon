@@ -1,8 +1,12 @@
 import express from "express";
 import { db } from "./database/conexion.js";
+import { routerMascotas } from "./rutas/mascotasRouter.js";
 
 //Crear instancia de Express
 const app = express();
+
+//Middleware JSON
+app.use(express.json());
 
 //Verificar Conexion Base Datos
 db.authenticate().then(()=>{
@@ -12,13 +16,16 @@ db.authenticate().then(()=>{
 });
 
 app.get('/', (req, res) => {
-    res.send('Sitio Principal Cola y Corazón');
+    res.send('Hola Sitio Principal');
 });
+
+//Llamar rutas de mascotas
+app.use("/mascotas",routerMascotas);
 
 
 const PORT=4000;
 
-db.sync({force: false}).then(()=>{
+db.sync({force: true}).then(()=>{
     //Abri servicio e iniciar el Servidor
     app.listen(PORT,()=>{
         console.log(`Servidor Inicializado en el puerto ${PORT}`);
