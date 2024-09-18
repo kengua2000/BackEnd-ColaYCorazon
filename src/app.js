@@ -1,6 +1,7 @@
 import express from "express";
 import { db } from "./database/conexion.js";
 import { routerMascotas } from "./rutas/mascotasRouter.js";
+import { routerClientes } from "./rutas/clientesRouter.js";
 
 //Crear instancia de Express
 const app = express();
@@ -21,7 +22,7 @@ app.get('/', (req, res) => {
 
 //Llamar rutas de mascotas
 app.use("/mascotas",routerMascotas);
-
+app.use("/clientes",routerClientes);
 
 const PORT=4000;
 
