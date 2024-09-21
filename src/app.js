@@ -29,7 +29,7 @@ app.use("/solicitudes", routerSolicitudes);
 
 const PORT=4000;
 
-db.sync({force: true}).then(()=>{
+db.sync({force: false}).then(()=>{
     //Abri servicio e iniciar el Servidor
     app.listen(PORT,()=>{
         console.log(`Servidor Inicializado en el puerto ${PORT}`);
