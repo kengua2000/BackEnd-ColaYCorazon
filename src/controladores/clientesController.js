@@ -1,8 +1,8 @@
-import { Clientes } from "../modelos/clienteModelo.js";
+import { Clientes } from "../modelos/clienteModelo.js"; // Importar el modelo Clientes
 
 // Crear un recurso Cliente
 const crearCliente = (req, res) => {
-    // Validar
+    // Validar campos obligatorios
     if (!req.body.nombre || !req.body.apellido) {
         res.status(400).send({
             mensaje: "El nombre y apellido no pueden estar vacíos."
@@ -10,17 +10,17 @@ const crearCliente = (req, res) => {
         return;
     }
 
-    // Crear dataset con los datos del cuerpo de la solicitud (req.body)
+    // Crear dataset con los datos recibidos del cuerpo de la solicitud
     const dataset = {
         nombre: req.body.nombre,
         apellido: req.body.apellido,
         direccion: req.body.direccion || null,
         telefono: req.body.telefono || null,
         email: req.body.email || null,
-        fecha_registro: req.body.fecha_registro || new Date()
+        fecha_registro: req.body.fecha_registro || new Date() // Fecha actual por defecto
     };
 
-    // Usar Sequelize para crear el recurso en la base de datos
+    // Usar Sequelize para crear el cliente en la base de datos
     Clientes.create(dataset).then((resultado) => {
         res.status(200).json({
             mensaje: "Registro de Cliente Creado con Éxito",
@@ -35,9 +35,10 @@ const crearCliente = (req, res) => {
 
 // Buscar todos los Clientes
 const buscarClientes = (req, res) => {
+    // Usar Sequelize para obtener todos los registros de Clientes
     Clientes.findAll()
         .then((resultado) => {
-            res.status(200).json(resultado);
+            res.status(200).json(resultado); // Devolver los registros en formato JSON
         })
         .catch((err) => {
             res.status(500).json({
@@ -48,7 +49,7 @@ const buscarClientes = (req, res) => {
 
 // Buscar Cliente por ID
 const buscarIdCliente = (req, res) => {
-    const id = req.params.id;
+    const id = req.params.id; // Obtener ID de los parámetros de la URL
     if (!id) {
         res.status(400).json({
             mensaje: "El ID no puede estar vacío"
@@ -56,10 +57,11 @@ const buscarIdCliente = (req, res) => {
         return;
     }
 
+    // Usar Sequelize para buscar un cliente por clave primaria (ID)
     Clientes.findByPk(id)
         .then((resultado) => {
             if (resultado) {
-                res.status(200).json(resultado);
+                res.status(200).json(resultado); // Devolver los datos del cliente si se encuentra
             } else {
                 res.status(404).json({
                     mensaje: "Cliente no encontrado"
@@ -75,7 +77,7 @@ const buscarIdCliente = (req, res) => {
 
 // Actualizar Cliente
 const actualizarCliente = (req, res) => {
-    const id = req.params.id;
+    const id = req.params.id; // Obtener ID de los parámetros de la URL
     if (!id) {
         res.status(400).json({
             mensaje: "El ID no puede estar vacío"
@@ -83,6 +85,7 @@ const actualizarCliente = (req, res) => {
         return;
     }
 
+    // Crear dataset con los datos a actualizar, basándose en los valores recibidos del cuerpo de la solicitud
     const datosActualizar = {
         nombre: req.body.nombre || undefined,
         apellido: req.body.apellido || undefined,
@@ -92,13 +95,14 @@ const actualizarCliente = (req, res) => {
         fecha_registro: req.body.fecha_registro || undefined
     };
 
-    // Filtrar campos vacíos
+    // Filtrar los campos vacíos o indefinidos
     Object.keys(datosActualizar).forEach(key => {
         if (datosActualizar[key] === undefined) {
             delete datosActualizar[key];
         }
     });
 
+    // Si no hay datos para actualizar, devolver un error
     if (Object.keys(datosActualizar).length === 0) {
         res.status(400).json({
             mensaje: "No se proporcionaron datos para actualizar"
@@ -106,9 +110,10 @@ const actualizarCliente = (req, res) => {
         return;
     }
 
+    // Usar Sequelize para actualizar el cliente
     Clientes.update(datosActualizar, { where: { id_cliente: id } })
         .then((resultado) => {
-            if (resultado[0] === 1) {
+            if (resultado[0] === 1) { // Verificar si se actualizó algún registro
                 res.status(200).json({
                     tipo: 'success',
                     mensaje: "Registro actualizado con éxito"
@@ -130,7 +135,7 @@ const actualizarCliente = (req, res) => {
 
 // Eliminar Cliente
 const eliminarCliente = (req, res) => {
-    const id = req.params.id;
+    const id = req.params.id; // Obtener ID de los parámetros de la URL
     if (!id) {
         res.status(400).json({
             mensaje: "El ID no puede estar vacío"
@@ -138,9 +143,10 @@ const eliminarCliente = (req, res) => {
         return;
     }
 
+    // Usar Sequelize para eliminar el cliente por su ID
     Clientes.destroy({ where: { id_cliente: id } })
         .then((resultado) => {
-            if (resultado === 1) {
+            if (resultado === 1) { // Verificar si se eliminó algún registro
                 res.status(200).json({
                     tipo: 'success',
                     mensaje: "Registro eliminado con éxito"
@@ -160,4 +166,5 @@ const eliminarCliente = (req, res) => {
         });
 };
 
+// Exportar las funciones para su uso en las rutas
 export { crearCliente, eliminarCliente, actualizarCliente, buscarIdCliente, buscarClientes };

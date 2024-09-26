@@ -1,9 +1,9 @@
-import { Mascotas } from "../modelos/mascotaModelo.js";
+import { Mascotas } from "../modelos/mascotaModelo.js"; // Importar el modelo Mascotas
 
-//Crear un recurso Mascota
+// Crear un recurso Mascota
 const crearMascota = (req, res) => {
 
-    // Validar
+    // Validar campos obligatorios
     if (!req.body.nombre) {
         res.status(400).send({
             mensaje: "El nombre no puede estar vacío."
@@ -18,7 +18,7 @@ const crearMascota = (req, res) => {
         return;
     }
 
-    // Crear dataset con los datos del cuerpo de la solicitud (req.body)
+    // Crear dataset con los datos recibidos del cuerpo de la solicitud
     const dataset = {
         nombre: req.body.nombre,
         especie: req.body.especie,
@@ -27,8 +27,8 @@ const crearMascota = (req, res) => {
         sexo: req.body.sexo || null,
         peso: req.body.peso || null,
         descripcion: req.body.descripcion || null,
-        estado: req.body.estado || 'Disponible',
-        fecha_ingreso: req.body.fecha_ingreso || new Date(), // Establece la fecha actual por defecto
+        estado: req.body.estado || 'Disponible', // Estado por defecto: Disponible
+        fecha_ingreso: req.body.fecha_ingreso || new Date(), // Fecha actual por defecto
         foto_url: req.body.foto_url || null
     };
 
@@ -49,7 +49,7 @@ const crearMascota = (req, res) => {
 const buscarMascota = (req, res) => {
     Mascotas.findAll()
         .then((resultado) => {
-            res.status(200).json(resultado);
+            res.status(200).json(resultado); // Devolver los resultados en formato JSON
         })
         .catch((err) => {
             res.status(500).json({
@@ -60,7 +60,7 @@ const buscarMascota = (req, res) => {
 
 // Buscar Mascota por ID
 const buscarIdMascota = (req, res) => {
-    const id = req.params.id;
+    const id = req.params.id; // Obtener ID de los parámetros de la URL
     if (!id) {
         res.status(400).json({
             mensaje: "El ID no puede estar vacío"
@@ -68,10 +68,11 @@ const buscarIdMascota = (req, res) => {
         return;
     }
 
+    // Buscar Mascota por clave primaria (ID)
     Mascotas.findByPk(id)
         .then((resultado) => {
             if (resultado) {
-                res.status(200).json(resultado);
+                res.status(200).json(resultado); // Devolver la mascota si se encuentra
             } else {
                 res.status(404).json({
                     mensaje: "Mascota no encontrada"
@@ -87,7 +88,7 @@ const buscarIdMascota = (req, res) => {
 
 // Actualizar Mascota
 const actualizarMascota = (req, res) => {
-    const id = req.params.id;
+    const id = req.params.id; // Obtener ID de los parámetros de la URL
     if (!id) {
         res.status(400).json({
             mensaje: "El ID no puede estar vacío"
@@ -95,6 +96,7 @@ const actualizarMascota = (req, res) => {
         return;
     }
 
+    // Dataset de actualización, usando los valores recibidos del cuerpo de la solicitud
     const datosActualizar = {
         nombre: req.body.nombre || undefined,
         especie: req.body.especie || undefined,
@@ -108,13 +110,14 @@ const actualizarMascota = (req, res) => {
         foto_url: req.body.foto_url || undefined
     };
 
-    // Filtrar campos vacíos
+    // Eliminar los campos vacíos o indefinidos
     Object.keys(datosActualizar).forEach(key => {
         if (datosActualizar[key] === undefined) {
             delete datosActualizar[key];
         }
     });
 
+    // Si no hay datos para actualizar, devolver un error
     if (Object.keys(datosActualizar).length === 0) {
         res.status(400).json({
             mensaje: "No se proporcionaron datos para actualizar"
@@ -122,9 +125,10 @@ const actualizarMascota = (req, res) => {
         return;
     }
 
+    // Actualizar la Mascota con Sequelize
     Mascotas.update(datosActualizar, { where: { id_mascota: id } })
         .then((resultado) => {
-            if (resultado[0] === 1) {
+            if (resultado[0] === 1) { // Comprobar si se actualizó el registro
                 res.status(200).json({
                     tipo: 'success',
                     mensaje: "Registro actualizado con éxito"
@@ -146,7 +150,7 @@ const actualizarMascota = (req, res) => {
 
 // Eliminar Mascota
 const eliminarMascota = (req, res) => {
-    const id = req.params.id;
+    const id = req.params.id; // Obtener ID de los parámetros de la URL
     if (!id) {
         res.status(400).json({
             mensaje: "El ID no puede estar vacío"
@@ -154,9 +158,10 @@ const eliminarMascota = (req, res) => {
         return;
     }
 
+    // Eliminar la mascota con Sequelize
     Mascotas.destroy({ where: { id_mascota: id } })
         .then((resultado) => {
-            if (resultado === 1) {
+            if (resultado === 1) { // Comprobar si se eliminó el registro
                 res.status(200).json({
                     tipo: 'success',
                     mensaje: "Registro eliminado con éxito"
@@ -176,6 +181,5 @@ const eliminarMascota = (req, res) => {
         });
 }
 
-
-
-export {crearMascota,eliminarMascota,actualizarMascota,buscarIdMascota,buscarMascota}
+// Exportar las funciones para su uso en las rutas
+export { crearMascota, eliminarMascota, actualizarMascota, buscarIdMascota, buscarMascota }

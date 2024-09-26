@@ -1,38 +1,37 @@
 import express from "express";
-import {crearMascota,eliminarMascota,actualizarMascota,buscarIdMascota,buscarMascota} from "../controladores/mascotasController.js";
+import { crearMascota, eliminarMascota, actualizarMascota, buscarIdMascota, buscarMascota } from "../controladores/mascotasController.js";
 
-const routerMascotas = express.Router();
+const routerMascotas = express.Router(); // Crear un router de Express
 
+// Ruta raíz que envía un mensaje simple
 routerMascotas.get('/', (req, res) => {
-    res.send('Hola Sitio de Mascotas');
+    res.send('Hola Sitio de Mascotas'); // Mensaje de prueba
 });
 
+// Ruta para crear una nueva mascota
 routerMascotas.post('/crearMascota', (req, res) => {
-    //res.send('Crear Mascota');
-    crearMascota(req,res);
-    
+    crearMascota(req, res); // Llama al controlador para crear una mascota
 });
 
+// Ruta para buscar todas las mascotas
 routerMascotas.get('/buscarMascota', (req, res) => {
-    //res.send('Buscar Mascota');
-    buscarMascota(req,res);
+    buscarMascota(req, res); // Llama al controlador para buscar todas las mascotas
 });
 
+// Ruta para buscar una mascota por ID
 routerMascotas.get('/buscarIdMascota/:id', (req, res) => {
-    //res.send('Buscar Mascota');
-    buscarIdMascota(req,res);
+    buscarIdMascota(req, res); // Llama al controlador para buscar una mascota por su ID
 });
 
+// Ruta para actualizar una mascota
 routerMascotas.put('/actualizarMascota/:id', (req, res) => {
-    //res.send('Actualizar Mascota');
-    actualizarMascota(req,res);
+    actualizarMascota(req, res); // Llama al controlador para actualizar una mascota por su ID
 });
 
+// Ruta para eliminar una mascota
 routerMascotas.delete('/eliminarMascota/:id', (req, res) => {
-    eliminarMascota(req,res);
+    eliminarMascota(req, res); // Llama al controlador para eliminar una mascota por su ID
 });
 
-
-
-
-export {routerMascotas}
+// Exportar el router para su uso en otras partes de la aplicación
+export { routerMascotas };
