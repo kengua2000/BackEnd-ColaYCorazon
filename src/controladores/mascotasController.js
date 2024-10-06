@@ -1,4 +1,46 @@
 import { Mascotas } from "../modelos/mascotaModelo.js"; // Importar el modelo Mascotas
+import { Op } from "sequelize"; // Importar operadores de Sequelize para realizar consultas avanzadas
+
+// Buscar Mascotas por filtro en cualquier columna
+const buscarMascotasPorFiltro = (req, res) => {
+    const filtro = req.query.filtro; // Obtener el parámetro de búsqueda desde la query string
+
+    if (!filtro) {
+        res.status(400).json({
+            mensaje: "El filtro de búsqueda no puede estar vacío"
+        });
+        return;
+    }
+
+    // Crear condiciones de búsqueda para aplicar el filtro en múltiples columnas
+    const condicionesBusqueda = {
+        [Op.or]: [
+            { nombre: { [Op.like]: `%${filtro}%` } },
+            { especie: { [Op.like]: `%${filtro}%` } },
+            { raza: { [Op.like]: `%${filtro}%` } },
+            { sexo: { [Op.like]: `%${filtro}%` } },
+            { descripcion: { [Op.like]: `%${filtro}%` } }
+        ]
+    };
+
+    // Usar Sequelize para buscar mascotas que coincidan con el filtro en cualquier columna
+    Mascotas.findAll({ where: condicionesBusqueda })
+        .then((resultado) => {
+            if (resultado.length > 0) {
+                res.status(200).json(resultado); // Devolver los registros encontrados
+            } else {
+                res.status(404).json({
+                    mensaje: "No se encontraron mascotas con el filtro proporcionado"
+                });
+            }
+        })
+        .catch((err) => {
+            res.status(500).json({
+                mensaje: `Error al buscar mascotas ::: ${err}`
+            });
+        });
+};
+
 
 // Crear un recurso Mascota
 const crearMascota = (req, res) => {
@@ -182,4 +224,4 @@ const eliminarMascota = (req, res) => {
 }
 
 // Exportar las funciones para su uso en las rutas
-export { crearMascota, eliminarMascota, actualizarMascota, buscarIdMascota, buscarMascota }
+export { crearMascota, eliminarMascota, actualizarMascota, buscarIdMascota, buscarMascota,buscarMascotasPorFiltro }

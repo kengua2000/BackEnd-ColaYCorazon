@@ -1,5 +1,5 @@
 import express from "express";
-import { crearMascota, eliminarMascota, actualizarMascota, buscarIdMascota, buscarMascota } from "../controladores/mascotasController.js";
+import { crearMascota, eliminarMascota, actualizarMascota, buscarIdMascota, buscarMascota,buscarMascotasPorFiltro } from "../controladores/mascotasController.js";
 
 const routerMascotas = express.Router(); // Crear un router de Express
 
@@ -16,6 +16,11 @@ routerMascotas.post('/crearMascota', (req, res) => {
 // Ruta para buscar todas las mascotas
 routerMascotas.get('/buscarMascota', (req, res) => {
     buscarMascota(req, res); // Llama al controlador para buscar todas las mascotas
+});
+
+// Ruta para buscar mascotas usando un filtro en cualquier columna
+routerMascotas.get('/buscarMascotaPorFiltro', (req, res) => {
+    buscarMascotasPorFiltro(req, res); // Llama al controlador para buscar mascotas por filtro
 });
 
 // Ruta para buscar una mascota por ID

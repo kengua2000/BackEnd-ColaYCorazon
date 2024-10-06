@@ -4,9 +4,11 @@ import { db } from "./database/conexion.js"; // Conexión a la base de datos
 import { routerMascotas } from "./rutas/mascotasRouter.js"; // Rutas para gestionar mascotas
 import { routerClientes } from "./rutas/clientesRouter.js"; // Rutas para gestionar clientes
 import { routerSolicitudes } from "./rutas/solicitudesRouter.js"; // Rutas para gestionar solicitudes
+import cors from "cors";
 
 // Crear instancia de la aplicación Express
 const app = express();
+app.use(cors());
 
 // Middleware para procesar datos en formato JSON
 app.use(express.json());
@@ -36,7 +38,7 @@ const PORT = 4000;
 
 // Sincronizar los modelos con la base de datos sin forzar cambios destructivos (force: false)
 // db.sync() asegura que la base de datos esté alineada con los modelos definidos en la aplicación
-db.sync({ force: false }).then(() => {
+db.sync({ force: false}).then(() => {
     // Si la sincronización es exitosa, iniciar el servidor en el puerto definido
     app.listen(PORT, () => {
         console.log(`Servidor iniciado en el puerto ${PORT}`);

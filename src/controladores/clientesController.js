@@ -1,4 +1,45 @@
-import { Clientes } from "../modelos/clienteModelo.js"; // Importar el modelo Clientes
+import { Clientes } from "../modelos/clienteModelo.js"; 
+import { Op } from "sequelize"; // Importar el modelo Clientes
+
+const buscarClientesPorFiltro = (req, res) => {
+    const filtro = req.query.filtro; // Obtener el parámetro de búsqueda desde la query string
+
+    if (!filtro) {
+        res.status(400).json({
+            mensaje: "El filtro de búsqueda no puede estar vacío"
+        });
+        return;
+    }
+
+    // Crear condiciones de búsqueda para aplicar el filtro en múltiples columnas
+    const condicionesBusqueda = {
+        [Op.or]: [
+            { nombre: { [Op.like]: `%${filtro}%` } },
+            { apellido: { [Op.like]: `%${filtro}%` } },
+            { direccion: { [Op.like]: `%${filtro}%` } },
+            { telefono: { [Op.like]: `%${filtro}%` } },
+            { email: { [Op.like]: `%${filtro}%` } }
+        ]
+    };
+
+    // Usar Sequelize para buscar clientes que coincidan con el filtro en cualquier columna
+    Clientes.findAll({ where: condicionesBusqueda })
+        .then((resultado) => {
+            if (resultado.length > 0) {
+                res.status(200).json(resultado); // Devolver los registros encontrados
+            } else {
+                res.status(404).json({
+                    mensaje: "No se encontraron clientes con el filtro proporcionado"
+                });
+            }
+        })
+        .catch((err) => {
+            res.status(500).json({
+                mensaje: `Error al buscar clientes ::: ${err}`
+            });
+        });
+};
+
 
 // Crear un recurso Cliente
 const crearCliente = (req, res) => {
@@ -167,4 +208,6 @@ const eliminarCliente = (req, res) => {
 };
 
 // Exportar las funciones para su uso en las rutas
-export { crearCliente, eliminarCliente, actualizarCliente, buscarIdCliente, buscarClientes };
+export { crearCliente, eliminarCliente, actualizarCliente, buscarIdCliente, buscarClientes,buscarClientesPorFiltro
+    
+ };

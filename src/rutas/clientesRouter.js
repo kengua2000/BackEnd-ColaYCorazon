@@ -1,5 +1,5 @@
 import express from "express";
-import { crearCliente, eliminarCliente, actualizarCliente, buscarIdCliente, buscarClientes } from "../controladores/clientesController.js";
+import { crearCliente, eliminarCliente, actualizarCliente, buscarIdCliente, buscarClientes, buscarClientesPorFiltro } from "../controladores/clientesController.js"; // Importar el controlador con la nueva función
 
 const routerClientes = express.Router(); // Crear un router de Express
 
@@ -21,6 +21,11 @@ routerClientes.get('/buscarCliente', (req, res) => {
 // Ruta para buscar un cliente por su ID
 routerClientes.get('/buscarIdCliente/:id', (req, res) => {
     buscarIdCliente(req, res); // Llama al controlador para buscar un cliente por su ID
+});
+
+// Ruta para buscar clientes usando un filtro en cualquier columna
+routerClientes.get('/buscarClientePorFiltro', (req, res) => {
+    buscarClientesPorFiltro(req, res); // Llama al controlador para buscar clientes por filtro
 });
 
 // Ruta para actualizar un cliente
